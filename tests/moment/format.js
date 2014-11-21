@@ -2,7 +2,7 @@ import { module, test } from "qunit";
 import moment from "moment";
 
 module('format', {
-    setup : function (done) {
+    setup : function () {
         moment.createFromInputFallback = function () {
             throw new Error('input not handled by moment');
         };
