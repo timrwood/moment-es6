@@ -1,13 +1,7 @@
 import { module, test } from "qunit";
 import moment from "moment";
 
-module('getters and setters', {
-    setup : function () {
-        moment.createFromInputFallback = function () {
-            throw new Error('input not handled by moment');
-        };
-    }
-});
+module('getters and setters');
 
 test('getters', function (assert) {
     var a = moment([2011, 9, 12, 6, 7, 8, 9]);

@@ -1,13 +1,7 @@
 import { module, test } from "qunit";
 import moment from "moment";
 
-module('duration from moments', {
-    setup: function (done) {
-        moment.createFromInputFallback = function () {
-            throw new Error('input not handled by moment');
-        };
-    }
-});
+module('duration from moments');
 
 test('pure year diff', function (assert) {
     var m1 = moment('2012-01-01T00:00:00.000Z'),

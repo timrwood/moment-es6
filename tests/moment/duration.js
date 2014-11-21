@@ -1,13 +1,7 @@
 import { module, test } from "qunit";
 import moment from "moment";
 
-module('duration', {
-    setup : function () {
-        moment.createFromInputFallback = function () {
-            throw new Error('input not handled by moment');
-        };
-    }
-});
+module('duration');
 
 test('object instantiation', function (assert) {
     var d = moment.duration({

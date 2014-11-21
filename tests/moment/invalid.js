@@ -1,13 +1,7 @@
 import { module, test } from "qunit";
 import moment from "moment";
 
-module('invalid', {
-    setup : function () {
-        moment.createFromInputFallback = function () {
-            throw new Error('input not handled by moment');
-        };
-    }
-});
+module('invalid');
 
 test('invalid', function (assert) {
     var m = moment.invalid();

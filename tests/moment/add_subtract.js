@@ -1,13 +1,7 @@
 import { module, test } from "qunit";
-import { moment } from "moment";
+import moment from "moment";
 
-module("add and subtract", {
-    setup : function () {
-        moment.createFromInputFallback = function () {
-            throw new Error('input not handled by moment');
-        };
-    }
-});
+module("add and subtract");
 
 test('add short reverse args', function (assert) {
     var a = moment(), b, c, d;

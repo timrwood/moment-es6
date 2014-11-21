@@ -1,13 +1,7 @@
 import { module, test } from "qunit";
 import moment from "moment";
 
-module('format', {
-    setup : function () {
-        moment.createFromInputFallback = function () {
-            throw new Error('input not handled by moment');
-        };
-    }
-});
+module('format');
 
 test('format YY', function (assert) {
     var b = moment(new Date(2009, 1, 14, 15, 25, 50, 125));
