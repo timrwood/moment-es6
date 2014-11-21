@@ -3,7 +3,6 @@ import moment from "moment";
 
 module("quarter");
 
-
 test('library quarter getter', function (assert) {
     assert.equal(moment([1985,  1,  4]).quarter(), 1, 'Feb  4 1985 is Q1');
     assert.equal(moment([2029,  8, 18]).quarter(), 3, 'Sep 18 2029 is Q3');

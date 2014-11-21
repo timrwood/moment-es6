@@ -1,7 +1,6 @@
 import { module, test } from "qunit";
 import moment from "moment";
 
-
 var symbolMap = {
     '1': '!',
     '2': '@',

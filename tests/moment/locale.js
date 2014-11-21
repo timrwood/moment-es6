@@ -2,7 +2,6 @@ import { module, test } from "qunit";
 import moment from "moment";
 import each from "helpers/each";
 
-
 module("locale", {
     setup : function () {
         // TODO: Remove once locales are switched to ES6
