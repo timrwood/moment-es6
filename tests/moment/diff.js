@@ -105,6 +105,7 @@ test('diff month', function (assert) {
 test('diff across DST', function (assert) {
     var dst = dstForYear(2012), a, b, daysInMonth;
     if (!dst) {
+        assert.ok(1, "no DST in this year");
         return;
     }
 
