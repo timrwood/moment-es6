@@ -1,4 +1,4 @@
-import { module, test } from "qunit";
+import { module, test } from "../qunit";
 import moment from "moment";
 
 function equal(assert, a, b, message) {

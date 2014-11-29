@@ -1,6 +1,6 @@
-import { module, test } from "qunit";
+import { module, test } from "../qunit";
 import moment from "moment";
-import each from "helpers/each";
+import each from "../helpers/each";
 
 module("locale", {
     setup : function () {
