@@ -1,5 +1,5 @@
 import { module, test } from "../qunit";
-import moment from "moment";
+import moment from "../../moment";
 import each from "../helpers/each";
 
 module("locale", {

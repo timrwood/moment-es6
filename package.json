@@ -39,12 +39,13 @@
     }
   ],
   "devDependencies": {
+    "6to5": "^1.14.6",
     "benchmark": "latest",
     "broccoli": "^0.13.3",
     "broccoli-cli": "0.0.1",
     "broccoli-es6-module-transpiler": "^0.5.0",
-    "broccoli-merge-trees": "^0.2.1",
     "broccoli-funnel": "^0.1.6",
+    "broccoli-merge-trees": "^0.2.1",
     "grunt": "latest",
     "grunt-benchmark": "latest",
     "grunt-contrib-concat": "latest",
@@ -68,6 +69,7 @@
     "uglify-js": "latest"
   },
   "scripts": {
+    "test-all": "6to5 --modules commonInterop tests --out-dir temp/lib/tests;6to5 --modules commonInterop lib --out-dir temp/lib;qunit-cli temp/lib/tests/**/*.js",
     "test": "rm -rf temp; broccoli build temp; qunit-cli temp/test.js"
   }
 }
