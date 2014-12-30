@@ -4,7 +4,7 @@ import moment from "../../moment";
 module("utc");
 
 test('utc and local', function (assert) {
-    var m = moment(Date.UTC(2011, 1, 2, 3, 4, 5, 6)), zone, expected;
+    var m = moment(Date.UTC(2011, 1, 2, 3, 4, 5, 6)), offset, expected;
     m.utc();
     // utc
     assert.equal(m.date(), 2, 'the day should be correct for utc');
@@ -20,10 +20,10 @@ test('utc and local', function (assert) {
         assert.equal(m.date(), 2, 'the date should be correct for local');
         assert.equal(m.day(), 3, 'the day should be correct for local');
     }
-    zone = Math.ceil(m.zone() / 60);
-    expected = (24 + 3 - zone) % 24;
+    offset = Math.ceil(m.utcOffset() / 60);
+    expected = (24 + 3 + offset) % 24;
     assert.equal(m.hours(), expected, 'the hours (' + m.hours() + ') should be correct for local');
-    assert.equal(moment().utc().zone(), 0, 'timezone in utc should always be zero');
+    assert.equal(moment().utc().utcOffset(), 0, 'timezone in utc should always be zero');
 });
 
 test('creating with utc and no arguments', function (assert) {
@@ -59,14 +59,14 @@ test('creating with utc without timezone', function (assert) {
     assert.equal(m.hours(), 23, 'the hours should be correct for utc parse with timezone');
 });
 
-test('cloning with utc', function (assert) {
+test('cloning with utc offset', function (assert) {
     var m = moment.utc('2012-01-02T08:20:00');
-    assert.equal(moment.utc(m)._isUTC, true, 'the local zone should be converted to UTC');
-    assert.equal(moment.utc(m.clone().utc())._isUTC, true, 'the local zone should stay in UTC');
+    assert.equal(moment.utc(m)._isUTC, true, 'the local offset should be converted to UTC');
+    assert.equal(moment.utc(m.clone().utc())._isUTC, true, 'the local offset should stay in UTC');
 
-    m.zone(120);
-    assert.equal(moment.utc(m)._isUTC, true, 'the explicit zone should stay in UTC');
-    assert.equal(moment.utc(m).zone(), 0, 'the explicit zone should have an offset of 0');
+    m.utcOffset(120);
+    assert.equal(moment.utc(m)._isUTC, true, 'the explicit utc offset should stay in UTC');
+    assert.equal(moment.utc(m).utcOffset(), 0, 'the explicit utc offset should have an offset of 0');
 });
 
 test('weekday with utc', function (assert) {

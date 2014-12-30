@@ -287,9 +287,9 @@ test('startOf across DST +1', function (assert) {
 
     moment.updateOffset = function (mom, keepTime) {
         if (mom.isBefore(dstAt)) {
-            mom.zone(8, keepTime);
+            mom.utcOffset(-8, keepTime);
         } else {
-            mom.zone(7, keepTime);
+            mom.utcOffset(-7, keepTime);
         }
     };
 
@@ -322,9 +322,9 @@ test('startOf across DST -1', function (assert) {
 
     moment.updateOffset = function (mom, keepTime) {
         if (mom.isBefore(dstAt)) {
-            mom.zone(7, keepTime);
+            mom.utcOffset(-7, keepTime);
         } else {
-            mom.zone(8, keepTime);
+            mom.utcOffset(-8, keepTime);
         }
     };
 
@@ -336,15 +336,23 @@ test('startOf across DST -1', function (assert) {
     m.startOf('d');
     assert.equal(m.format(), '2014-11-02T00:00:00-07:00', 'startOf(\'day\') across -1');
 
-    // note that zone is -8
+    // note that utc offset is -8
     m = moment('2014-11-02T01:30:00-08:00').parseZone();
     m.startOf('h');
     assert.equal(m.format(), '2014-11-02T01:00:00-08:00', 'startOf(\'hour\') after +1');
 
-    // note that zone is -7
+    // note that utc offset is -7
     m = moment('2014-11-02T01:30:00-07:00').parseZone();
     m.startOf('h');
     assert.equal(m.format(), '2014-11-02T01:00:00-07:00', 'startOf(\'hour\') before +1');
 
     moment.updateOffset = oldUpdateOffset;
+});
+
+test('endOf millisecond and no-arg', function (assert) {
+    var m = moment();
+    assert.equal(+m, +m.clone().endOf(), 'endOf without argument should change time');
+    assert.equal(+m, +m.clone().endOf('ms'), 'endOf with ms argument should change time');
+    assert.equal(+m, +m.clone().endOf('millisecond'), 'endOf with millisecond argument should change time');
+    assert.equal(+m, +m.clone().endOf('milliseconds'), 'endOf with milliseconds argument should change time');
 });

@@ -30,6 +30,15 @@ test('array bad date', function (assert) {
     }
 });
 
+test('h/hh with hour > 12', function (assert) {
+    assert.ok(moment('06/20/2014 11:51 PM', 'MM/DD/YYYY hh:mm A', true).isValid(), '11 for hh');
+    assert.ok(moment('06/20/2014 11:51 AM', 'MM/DD/YYYY hh:mm A', true).isValid(), '11 for hh');
+    assert.ok(moment('06/20/2014 23:51 PM', 'MM/DD/YYYY hh:mm A').isValid(), 'non-strict validity 23 for hh');
+    assert.ok(moment('06/20/2014 23:51 PM', 'MM/DD/YYYY hh:mm A').parsingFlags().bigHour, 'non-strict bigHour 23 for hh');
+    assert.ok(!moment('06/20/2014 23:51 PM', 'MM/DD/YYYY hh:mm A', true).isValid(), 'validity 23 for hh');
+    assert.ok(moment('06/20/2014 23:51 PM', 'MM/DD/YYYY hh:mm A', true).parsingFlags().bigHour, 'bigHour 23 for hh');
+});
+
 test('array bad date leap year', function (assert) {
     assert.equal(moment([2010, 1, 29]).isValid(), false, '2010 feb 29');
     assert.equal(moment([2100, 1, 29]).isValid(), false, '2100 feb 29');
@@ -75,7 +84,7 @@ test('invalid string iso 8601', function (assert) {
         '2010-00-00',
         '2010-01-00',
         '2010-01-40',
-        '2010-01-01T24',
+        '2010-01-01T24:01',  // 24:00:00 is actually valid
         '2010-01-01T23:60',
         '2010-01-01T23:59:60'
     ], i;
@@ -91,7 +100,7 @@ test('invalid string iso 8601 + timezone', function (assert) {
         '2010-00-00T+00:00',
         '2010-01-00T+00:00',
         '2010-01-40T+00:00',
-        '2010-01-40T24+00:00',
+        '2010-01-40T24:01+00:00',
         '2010-01-40T23:60+00:00',
         '2010-01-40T23:59:60+00:00',
         '2010-01-40T23:59:59.9999+00:00'
@@ -125,7 +134,8 @@ test('valid string iso 8601 + timezone', function (assert) {
 test('invalidAt', function (assert) {
     assert.equal(moment([2000, 12]).invalidAt(), 1, 'month 12 is invalid: 0-11');
     assert.equal(moment([2000, 1, 30]).invalidAt(), 2, '30 is not a valid february day');
-    assert.equal(moment([2000, 1, 29, 24]).invalidAt(), 3, '24 is invalid hour');
+    assert.equal(moment([2000, 1, 29, 25]).invalidAt(), 3, '25 is invalid hour');
+    assert.equal(moment([2000, 1, 29, 24, 01]).invalidAt(), 3, '24:01 is invalid hour');
     assert.equal(moment([2000, 1, 29, 23, 60]).invalidAt(), 4, '60 is invalid minute');
     assert.equal(moment([2000, 1, 29, 23, 59, 60]).invalidAt(), 5, '60 is invalid second');
     assert.equal(moment([2000, 1, 29, 23, 59, 59, 1000]).invalidAt(), 6, '1000 is invalid millisecond');
@@ -177,6 +187,32 @@ test('invalid Unix timestamp', function (assert) {
     assert.equal(moment(' ', 'X').isValid(), false, 'string space');
 });
 
+test('valid Unix offset milliseconds', function (assert) {
+    assert.equal(moment(1234567890123, 'x').isValid(), true, 'number integer');
+    assert.equal(moment('1234567890123', 'x').isValid(), true, 'string integer');
+});
+
+test('invalid Unix offset milliseconds', function (assert) {
+    assert.equal(moment(undefined, 'x').isValid(), false, 'undefined');
+    assert.equal(moment('undefined', 'x').isValid(), false, 'string undefined');
+    try {
+        assert.equal(moment(null, 'x').isValid(), false, 'null');
+    } catch (e) {
+        assert.ok(true, 'null');
+    }
+
+    assert.equal(moment('null', 'x').isValid(), false, 'string null');
+    assert.equal(moment([], 'x').isValid(), false, 'array');
+    assert.equal(moment('{}', 'x').isValid(), false, 'object');
+    try {
+        assert.equal(moment('', 'x').isValid(), false, 'string empty');
+    } catch (e) {
+        assert.ok(true, 'string empty');
+    }
+
+    assert.equal(moment(' ', 'x').isValid(), false, 'string space');
+});
+
 test('empty', function (assert) {
     assert.equal(moment(null).isValid(), false, 'null');
     assert.equal(moment('').isValid(), false, 'empty string');
@@ -192,6 +228,12 @@ test('days of the year', function (assert) {
     assert.equal(moment('2012 365', 'YYYY DDDD').isValid(), true, 'day 365 of leap year valid');
     assert.equal(moment('2012 366', 'YYYY DDDD').isValid(), true, 'day 366 of leap year valid');
     assert.equal(moment('2012 367', 'YYYY DDDD').isValid(), false, 'day 367 of leap year invalid');
+});
+
+test('24:00:00.000 is valid', function (assert) {
+    assert.equal(moment('2014-01-01 24', 'YYYY-MM-DD HH').isValid(), true, '24 is valid');
+    assert.equal(moment('2014-01-01 24:00', 'YYYY-MM-DD HH:mm').isValid(), true, '24:00 is valid');
+    assert.equal(moment('2014-01-01 24:01', 'YYYY-MM-DD HH:mm').isValid(), false, '24:01 is not valid');
 });
 
 test('oddball permissiveness', function (assert) {

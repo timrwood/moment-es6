@@ -139,9 +139,9 @@ test('is same millisecond', function (assert) {
     assert.equal(+m, +mCopy, 'isSame millisecond should not change moment');
 });
 
-test('is same with zone\'d moments', function (assert) {
+test('is same with utc offset moments', function (assert) {
     assert.ok(moment.parseZone('2013-02-01T-05:00').isSame(moment('2013-02-01'), 'year'), 'zoned vs local moment');
-    assert.ok(moment('2013-02-01').isSame(moment('2013-02-01').zone('-05:00'), 'year'), 'local vs zoned moment');
+    assert.ok(moment('2013-02-01').isSame(moment('2013-02-01').utcOffset('-05:00'), 'year'), 'local vs zoned moment');
     assert.ok(moment.parseZone('2013-02-01T-05:00').isSame(moment.parseZone('2013-02-01T-06:30'), 'year'),
             'zoned vs (differently) zoned moment');
 });

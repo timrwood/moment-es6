@@ -187,6 +187,27 @@ test('chaining setters', function (assert) {
     assert.equal(a.seconds(), 8, 'second');
 });
 
+test('setter with multiple unit values', function (assert) {
+    var a = moment();
+    a.set({
+        year: 2011,
+        month: 9,
+        date: 12,
+        hours: 6,
+        minutes: 7,
+        seconds: 8,
+        milliseconds: 9
+    });
+    assert.equal(a.year(), 2011, 'year');
+    assert.equal(a.month(), 9, 'month');
+    assert.equal(a.date(), 12, 'date');
+    assert.equal(a.day(), 3, 'day');
+    assert.equal(a.hours(), 6, 'hour');
+    assert.equal(a.minutes(), 7, 'minute');
+    assert.equal(a.seconds(), 8, 'second');
+    assert.equal(a.milliseconds(), 9, 'milliseconds');
+});
+
 test('day setter', function (assert) {
     var a = moment([2011, 0, 15]);
     assert.equal(moment(a).day(0).date(), 9, 'set from saturday to sunday');

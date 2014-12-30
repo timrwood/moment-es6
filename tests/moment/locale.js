@@ -158,6 +158,13 @@ test('library convenience', function (assert) {
     assert.equal(moment.locale(), 'something', 'locale can be used to create the locale too');
 });
 
+test('firstDayOfWeek firstDayOfYear locale getters', function (assert) {
+    moment.locale('something', {week: {dow: 3, doy: 4}});
+    moment.locale('something');
+    assert.equal(moment.localeData().firstDayOfWeek(), 3, 'firstDayOfWeek');
+    assert.equal(moment.localeData().firstDayOfYear(), 4, 'firstDayOfYear');
+});
+
 test('instance locale method', function (assert) {
     moment.locale('en');
 

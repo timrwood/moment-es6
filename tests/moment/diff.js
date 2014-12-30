@@ -14,7 +14,7 @@ function dstForYear(year) {
     while (current < end) {
         last = current.clone();
         current.add(24, 'hour');
-        if (last.zone() !== current.zone()) {
+        if (last.utcOffset() !== current.utcOffset()) {
             end = current.clone();
             current = last.clone();
             break;
@@ -24,10 +24,10 @@ function dstForYear(year) {
     while (current < end) {
         last = current.clone();
         current.add(1, 'hour');
-        if (last.zone() !== current.zone()) {
+        if (last.utcOffset() !== current.utcOffset()) {
             return {
                 moment : last,
-                diff : (current.zone() - last.zone()) / 60
+                diff : -(current.utcOffset() - last.utcOffset()) / 60
             };
         }
     }
@@ -103,37 +103,59 @@ test('diff month', function (assert) {
 });
 
 test('diff across DST', function (assert) {
-    var dst = dstForYear(2012), a, b, daysInMonth;
+   var dst = dstForYear(2012), a, b, daysInMonth;
     if (!dst) {
-        assert.ok(1, "no DST in this year");
         return;
     }
 
     a = dst.moment;
     b = a.clone().utc().add(12, 'hours').local();
     daysInMonth = (a.daysInMonth() + b.daysInMonth()) / 2;
-    equal(assert, b.diff(a, 'ms', true), 12 * 60 * 60 * 1000,                         'ms diff across DST');
-    equal(assert, b.diff(a, 's', true),  12 * 60 * 60,                                'second diff across DST');
-    equal(assert, b.diff(a, 'm', true),  12 * 60,                                     'minute diff across DST');
-    equal(assert, b.diff(a, 'h', true),  12,                                          'hour diff across DST');
-    equal(assert, b.diff(a, 'd', true),  (12 - dst.diff) / 24,                        'day diff across DST');
-    equal(assert, b.diff(a, 'w', true),  (12 - dst.diff) / 24 / 7,                    'week diff across DST');
-    equal(assert, b.diff(a, 'M', true),  (12 - dst.diff) / 24 / daysInMonth,          'month diff across DST');
-    equal(assert, b.diff(a, 'y', true),  (12 - dst.diff) / 24 / daysInMonth / 12,     'year diff across DST');
-
+    assert.equal(b.diff(a, 'milliseconds', true), 12 * 60 * 60 * 1000,
+            'ms diff across DST');
+    assert.equal(b.diff(a, 'seconds', true), 12 * 60 * 60,
+            'second diff across DST');
+    assert.equal(b.diff(a, 'minutes', true), 12 * 60,
+            'minute diff across DST');
+    assert.equal(b.diff(a, 'hours', true), 12,
+            'hour diff across DST');
+    assert.equal(b.diff(a, 'days', true), (12 - dst.diff) / 24,
+            'day diff across DST');
+    equal(assert, b.diff(a, 'weeks', true),  (12 - dst.diff) / 24 / 7,
+            'week diff across DST');
+    assert.ok(0.95 / (2 * 31) < b.diff(a, 'months', true),
+            'month diff across DST, lower bound');
+    assert.ok(b.diff(a, 'month', true) < 1.05 / (2 * 28),
+            'month diff across DST, upper bound');
+    assert.ok(0.95 / (2 * 31 * 12) < b.diff(a, 'years', true),
+            'year diff across DST, lower bound');
+    assert.ok(b.diff(a, 'year', true) < 1.05 / (2 * 28 * 12),
+            'year diff across DST, upper bound');
 
     a = dst.moment;
     b = a.clone().utc().add(12 + dst.diff, 'hours').local();
     daysInMonth = (a.daysInMonth() + b.daysInMonth()) / 2;
 
-    equal(assert, b.diff(a, 'ms', true), (12 + dst.diff) * 60 * 60 * 1000,   'ms diff across DST');
-    equal(assert, b.diff(a, 's', true),  (12 + dst.diff) * 60 * 60,          'second diff across DST');
-    equal(assert, b.diff(a, 'm', true),  (12 + dst.diff) * 60,               'minute diff across DST');
-    equal(assert, b.diff(a, 'h', true),  (12 + dst.diff),                    'hour diff across DST');
-    equal(assert, b.diff(a, 'd', true),  12 / 24,                            'day diff across DST');
-    equal(assert, b.diff(a, 'w', true),  12 / 24 / 7,                        'week diff across DST');
-    equal(assert, b.diff(a, 'M', true),  12 / 24 / daysInMonth,              'month diff across DST');
-    equal(assert, b.diff(a, 'y', true),  12 / 24 / daysInMonth / 12,         'year diff across DST');
+    assert.equal(b.diff(a, 'milliseconds', true),
+            (12 + dst.diff) * 60 * 60 * 1000,
+            'ms diff across DST');
+    assert.equal(b.diff(a, 'seconds', true),  (12 + dst.diff) * 60 * 60,
+            'second diff across DST');
+    assert.equal(b.diff(a, 'minutes', true),  (12 + dst.diff) * 60,
+            'minute diff across DST');
+    assert.equal(b.diff(a, 'hours', true),  (12 + dst.diff),
+            'hour diff across DST');
+    assert.equal(b.diff(a, 'days', true),  12 / 24, 'day diff across DST');
+    equal(assert, b.diff(a, 'weeks', true),  12 / 24 / 7,
+            'week diff across DST');
+    assert.ok(0.95 / (2 * 31) < b.diff(a, 'months', true),
+            'month diff across DST, lower bound');
+    assert.ok(b.diff(a, 'month', true) < 1.05 / (2 * 28),
+            'month diff across DST, upper bound');
+    assert.ok(0.95 / (2 * 31 * 12) < b.diff(a, 'years', true),
+            'year diff across DST, lower bound');
+    assert.ok(b.diff(a, 'year', true) < 1.05 / (2 * 28 * 12),
+            'year diff across DST, upper bound');
 });
 
 test('diff overflow', function (assert) {
@@ -144,8 +166,8 @@ test('diff overflow', function (assert) {
 });
 
 test('diff between utc and local', function (assert) {
-    if (moment([2012]).zone() === moment([2011]).zone()) {
-        // Russia's zone offset on 1st of Jan 2012 vs 2011 is different
+    if (moment([2012]).utcOffset() === moment([2011]).utcOffset()) {
+        // Russia's utc offset on 1st of Jan 2012 vs 2011 is different
         assert.equal(moment([2012]).utc().diff([2011], 'years'), 1, 'year diff');
     }
     assert.equal(moment([2010, 2, 2]).utc().diff([2010, 0, 2], 'months'), 2, 'month diff');
@@ -172,14 +194,15 @@ test('year diffs include dates', function (assert) {
 
 test('month diffs', function (assert) {
     // due to floating point math errors, these tests just need to be accurate within 0.00000001
-    equal(assert, moment([2012, 0, 1]).diff([2012, 1, 1], 'months', true), -1, 'Jan 1 to Feb 1 should be 1 month');
+    assert.equal(moment([2012, 0, 1]).diff([2012, 1, 1], 'months', true), -1, 'Jan 1 to Feb 1 should be 1 month');
     equal(assert, moment([2012, 0, 1]).diff([2012, 0, 1, 12], 'months', true), -0.5 / 31, 'Jan 1 to Jan 1 noon should be 0.5 / 31 months');
-    equal(assert, moment([2012, 0, 15]).diff([2012, 1, 15], 'months', true), -1, 'Jan 15 to Feb 15 should be 1 month');
-    equal(assert, moment([2012, 0, 28]).diff([2012, 1, 28], 'months', true), -1, 'Jan 28 to Feb 28 should be 1 month');
-    equal(assert, moment([2012, 0, 31]).diff([2012, 1, 29], 'months', true), -1 + (2 / 30), 'Jan 31 to Feb 29 should be 1 - (2 / 30) months');
-    equal(assert, moment([2012, 0, 31]).diff([2012, 2, 1], 'months', true), -2 + (30 / 31), 'Jan 31 to Mar 1 should be 2 - (30 / 31) months');
-    equal(assert, moment([2012, 0, 31]).diff([2012, 2, 1, 12], 'months', true), -2 + (29.5 / 31), 'Jan 31 to Mar 1 should be 2 - (29.5 / 31) months');
+    assert.equal(moment([2012, 0, 15]).diff([2012, 1, 15], 'months', true), -1, 'Jan 15 to Feb 15 should be 1 month');
+    assert.equal(moment([2012, 0, 28]).diff([2012, 1, 28], 'months', true), -1, 'Jan 28 to Feb 28 should be 1 month');
+    assert.ok(moment([2012, 0, 31]).diff([2012, 1, 29], 'months', true), -1, 'Jan 31 to Feb 29 should be 1 month');
+    assert.ok(-1 > moment([2012, 0, 31]).diff([2012, 2, 1], 'months', true), 'Jan 31 to Mar 1 should be more than 1 month');
+    assert.ok(-30 / 28 < moment([2012, 0, 31]).diff([2012, 2, 1], 'months', true), 'Jan 31 to Mar 1 should be less than 1 month and 1 day');
     equal(assert, moment([2012, 0, 1]).diff([2012, 0, 31], 'months', true), -(30 / 31), 'Jan 1 to Jan 31 should be 30 / 31 months');
+    assert.ok(0 < moment('2014-02-01').diff(moment('2014-01-31'), 'months', true), 'jan-31 to feb-1 diff is positive');
 });
 
 test('exact month diffs', function (assert) {
@@ -206,6 +229,5 @@ test('year diffs', function (assert) {
     equal(assert, moment([2012, 0, 31]).diff([2013, 6, 31], 'years', true), -1.5, 'Jan 31 2012 to Jul 31 2013 should be 1.5 years');
     equal(assert, moment([2012, 0, 1]).diff([2013, 0, 1, 12], 'years', true), -1 - (0.5 / 31) / 12, 'Jan 1 2012 to Jan 1 2013 noon should be 1+(0.5 / 31) / 12 years');
     equal(assert, moment([2012, 0, 1]).diff([2013, 6, 1, 12], 'years', true), -1.5 - (0.5 / 31) / 12, 'Jan 1 2012 to Jul 1 2013 noon should be 1.5+(0.5 / 31) / 12 years');
-    equal(assert, moment([2012, 1, 29]).diff([2013, 1, 28], 'years', true), -1 + (1 / 28.5) / 12, 'Feb 29 2012 to Feb 28 2013 should be 1-(1 / 28.5) / 12 years');
-
+    equal(test, moment([2012, 1, 29]).diff([2013, 1, 28], 'years', true), -1, 'Feb 29 2012 to Feb 28 2013 should be 1-(1 / 28.5) / 12 years');
 });
