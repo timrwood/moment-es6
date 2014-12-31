@@ -7,9 +7,9 @@ function equal(assert, a, b, message) {
 
 function dstForYear(year) {
     var start = moment([year]),
-    end = moment([year + 1]),
-    current = start.clone(),
-    last;
+        end = moment([year + 1]),
+        current = start.clone(),
+        last;
 
     while (current < end) {
         last = current.clone();
@@ -229,5 +229,5 @@ test('year diffs', function (assert) {
     equal(assert, moment([2012, 0, 31]).diff([2013, 6, 31], 'years', true), -1.5, 'Jan 31 2012 to Jul 31 2013 should be 1.5 years');
     equal(assert, moment([2012, 0, 1]).diff([2013, 0, 1, 12], 'years', true), -1 - (0.5 / 31) / 12, 'Jan 1 2012 to Jan 1 2013 noon should be 1+(0.5 / 31) / 12 years');
     equal(assert, moment([2012, 0, 1]).diff([2013, 6, 1, 12], 'years', true), -1.5 - (0.5 / 31) / 12, 'Jan 1 2012 to Jul 1 2013 noon should be 1.5+(0.5 / 31) / 12 years');
-    equal(test, moment([2012, 1, 29]).diff([2013, 1, 28], 'years', true), -1, 'Feb 29 2012 to Feb 28 2013 should be 1-(1 / 28.5) / 12 years');
+    equal(assert, moment([2012, 1, 29]).diff([2013, 1, 28], 'years', true), -1, 'Feb 29 2012 to Feb 28 2013 should be 1-(1 / 28.5) / 12 years');
 });

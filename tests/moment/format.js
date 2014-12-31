@@ -96,10 +96,10 @@ test('unix timestamp', function (assert) {
 
 test('unix offset milliseconds', function (assert) {
     var m = moment('1234567890123', 'x');
-    assert.equals(m.format('x'), '1234567890123', 'unix offset in milliseconds');
+    assert.equal(m.format('x'), '1234567890123', 'unix offset in milliseconds');
 
     m = moment(1234567890123, 'x');
-    assert.equals(m.format('x'), '1234567890123', 'unix offset in milliseconds as integer');
+    assert.equal(m.format('x'), '1234567890123', 'unix offset in milliseconds as integer');
 });
 
 test('utcOffset sanity checks', function (assert) {
@@ -310,7 +310,7 @@ test('calendar day timezone', function (assert) {
     for (i = 0; i < zones.length; ++i) {
         z = zones[i];
         a = moment().utcOffset(z).startOf('day').subtract({m: 1});
-        test.equal(moment(a).utcOffset(z).calendar(), 'Yesterday at 11:59 PM',
+        assert.equal(moment(a).utcOffset(z).calendar(), 'Yesterday at 11:59 PM',
                      'Yesterday at 11:59 PM, not Today, or the wrong time, tz = ' + z);
     }
 

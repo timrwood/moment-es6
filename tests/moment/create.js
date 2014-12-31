@@ -50,8 +50,8 @@ test('multi format array copying', function (assert) {
 
 test('number', function (assert) {
     assert.ok(moment(1000).toDate() instanceof Date, '1000');
-    assert.equal((moment(1000).valueOf(), 1000), 'asserting valueOf');
-    assert.equal((moment.utc(1000).valueOf(), 1000), 'asserting valueOf');
+    assert.equal(moment(1000).valueOf(), 1000, 'asserting valueOf');
+    assert.equal(moment.utc(1000).valueOf(), 1000, 'asserting valueOf');
 });
 
 test('unix', function (assert) {
@@ -253,7 +253,6 @@ test('unix timestamp format', function (assert) {
 });
 
 test('unix offset milliseconds', function (assert) {
-    assert.expect(1);
     assert.equal(moment('1234567890123', 'x').valueOf(), 1234567890123, 'x matches unix offset in milliseconds');
 });
 
